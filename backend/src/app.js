@@ -10,6 +10,7 @@ app.register(jwt, {
 });
 
 app.decorate('authenticate', async (request, reply) => {
+    console.log("Authe Header: ", request.headers.authorization);
     try{
         await request.jwtVerify();
     }catch{

@@ -36,5 +36,5 @@ export async function loginUser(request, reply){
 
     });
 
-    reply.send({ name: user.name, email: user.email, });
+    reply.send({ name: user.name, email: user.email, token});
 }
