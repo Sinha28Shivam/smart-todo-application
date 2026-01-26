@@ -1,0 +1,52 @@
+frontend/
+│
+├── src/
+│   ├── app/
+│   │   ├── layout.jsx
+│   │   ├── page.jsx              # Dashboard
+│   │   │
+│   │   ├── login/
+│   │   │   └── page.jsx
+│   │   │
+│   │   ├── register/
+│   │   │   └── page.jsx
+│   │   │
+│   │   ├── tasks/
+│   │   │   ├── page.jsx          # Task list
+│   │   │   └── [id]/
+│   │   │       └── page.jsx      # Edit task
+│   │   │
+│   │   └── insights/
+│   │       └── page.jsx          # AI summary
+│
+│   ├── components/
+│   │   ├── TaskCard.jsx
+│   │   ├── TaskForm.jsx
+│   │   ├── FilterBar.jsx
+│   │   ├── Navbar.jsx
+│   │   └── ProtectedRoute.jsx
+│
+│   ├── services/
+│   │   ├── api.js                # Axios wrapper
+│   │   ├── auth.service.js
+│   │   ├── task.service.js
+│   │   └── ai.service.js
+│
+│   ├── hooks/
+│   │   ├── useAuth.js
+│   │   └── useTasks.js
+│
+│   ├── context/
+│   │   └── AuthContext.jsx
+│
+│   ├── utils/
+│   │   ├── token.js
+│   │   └── priorityMap.js
+│
+│   └── styles/
+│       └── globals.css
+│
+├── public/
+├── .env.local
+├── package.json
+└── README.md

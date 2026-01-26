@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Sinha28Shivam/smart-todo-application#readme",
   "dependencies": {
+    "@fastify/cors": "^11.2.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "fastify": "^5.7.1",
