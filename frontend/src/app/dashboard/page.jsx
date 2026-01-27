@@ -1,21 +1,42 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import StateCard from "../../components/StateCard";
 import { TaskService } from "../../services/task.service";
 
 export default function DashboardPage() {
+  const [taskStates, setTaskStates] = useState({
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+  });
+
   useEffect(() => {
-    async function testBackend() {
+    async function fetchStats() {
       try {
         const tasks = await TaskService.getTasks();
-        console.log("✅ Tasks from backend:", tasks);
+        console.log("Tasks from backend:", tasks);
+
+        const stats = {
+          total: tasks.length,
+          pending: tasks.filter(t=> t.status === "pending").length,
+          inProgress: tasks.filter(t=> t.status === "in-progress").length,
+          completed: tasks.filter(t=> t.status === "completed").length,
+        };
+
+        setTaskStates(stats);
+
       } catch (err) {
-        console.error("❌ API error:", err.message);
+        console.error("API error:", err.message);
       }
     }
 
-    testBackend();
+    fetchStats();
+    
+
+
+
   }, []);
 
   return (
@@ -29,18 +50,16 @@ export default function DashboardPage() {
         </p>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-        <StateCard title="Total Tasks" value="-" icon="📋" />
-        <StateCard title="To Do" value="-" icon="⏳" />
-        <StateCard title="In Progress" value="-" icon="⚡" />
-        <StateCard title="Completed" value="-" icon="✅" />
+      {/* <section className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-6 gap-4 mb-8"> */}
+        <div className="grid items-center grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <StateCard title="Total Tasks" value={taskStates.total} icon="📋" />
+        <StateCard title="To Do" value={taskStates.pending} icon="⏳" />
+        <StateCard title="In Progress" value={taskStates.inProgress} icon="⚡" />
+        <StateCard title="Completed" value={taskStates.completed} icon="✅" />
         <StateCard title="Completion Rate" value="-" icon="📊" />
         <StateCard title="AI Insights" value="→" icon="🤖" />
-      </section>
-
-      <section className="bg-white rounded-2xl shadow-xl p-6">
-        Backend service test (check console)
-      </section>
+        </div>
+      {/* </section> */}
     </main>
   );
 }
