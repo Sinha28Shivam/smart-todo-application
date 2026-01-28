@@ -9,6 +9,7 @@
 body{
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(135deg, #4b3c8a, #8b3fa8);
+  color: #ffffff;
     min-height: 100vh;
 }
 .app-container{
@@ -41,4 +42,27 @@ body{
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Global focus style for accessibility */
+:focus-visible {
+  outline: 3px solid #8b5cf6; /* Vibrant purple focus ring */
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip to Content Link (Hidden until Tabbed) */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
 }

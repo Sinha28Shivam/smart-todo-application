@@ -68,7 +68,8 @@ export default function SignupPage() {
                             </label>
                             <input 
                                 type="text" placeholder="Enter your full name" required 
-                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white"
+                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white
+                                text-gray-800"
                                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                             />
                         </div>
@@ -79,7 +80,8 @@ export default function SignupPage() {
                             </label>
                             <input 
                                 type="email" placeholder="Enter your email" required 
-                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white"
+                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white
+                                text-gray-800"
                                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                             />
                         </div>
@@ -90,7 +92,8 @@ export default function SignupPage() {
                             </label>
                             <input 
                                 type="password" placeholder="Create a password" required 
-                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white"
+                                className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white
+                                text-gray-800"
                                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                             />
                         </div>

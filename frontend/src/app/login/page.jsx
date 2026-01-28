@@ -70,7 +70,8 @@ export default function LoginPage() {
                             </label>
                             <input 
                                 type="email" placeholder="Enter your email" required 
-                                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white"
+                                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white
+                                text-gray-800"
                                 onChange={(e) => setCredentials({...credentials, email: e.target.value})}
                             />
                         </div>
@@ -81,7 +82,8 @@ export default function LoginPage() {
                             </label>
                             <input 
                                 type="password" placeholder="Enter your password" required 
-                                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white"
+                                className="w-full px-5 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all bg-white
+                                text-gray-800"
                                 onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                             />
                         </div>

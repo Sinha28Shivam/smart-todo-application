@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
+import AuthChecking from "../components/AuthChecking";
 
 export default function RootLayout({ children }) {
   return (
@@ -8,9 +9,11 @@ export default function RootLayout({ children }) {
         {/* Consistent background matching your globals.css */}
         <div className="min-h-screen bg-gradient-to-br from-purple-700 via-purple-600 to-pink-600">
           <Navbar /> 
-          <div className="app-container">
-            {children}
-          </div>
+          <AuthChecking>
+            <div className="app-container">
+              {children}
+            </div>
+          </AuthChecking>
         </div>
       </body>
     </html>
