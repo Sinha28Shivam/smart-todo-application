@@ -30,11 +30,18 @@ export async function loginUser(request, reply){
         return reply.code(401).send({ message: 'Invalid email or password' });
     }
 
-    const token = request.server.jwt.sign({
+    const token = request.server.jwt.sign(
+        {
         id: user._id,
         email: user.email
+        },
 
-    });
+        {
+            expiresIn: '2h'
+        }
+
+
+);
 
     reply.send({ name: user.name, email: user.email, token});
 }

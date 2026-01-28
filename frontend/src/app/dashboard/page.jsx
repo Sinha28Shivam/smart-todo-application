@@ -51,10 +51,10 @@ export default function DashboardPage() {
         <StateCard title="Pending" value={stats.pending} icon="⏳" />
         <StateCard title="Active" value={stats.inProgress} icon="⚡" />
         <StateCard title="Done" value={stats.completed} icon="✅" />
-        <StateCard title="Rate" value={`${stats.rate}%`} icon="📊" bg="bg-gradient-to-br from-purple-500 to-pink-500" text="text-white" />
+        <StateCard title="Rate" value={`${stats.rate}%`} icon="📊"  text="text-black" />
         
         {/* Create Task Button Card */}
-        <Link href="/editTask" className="group bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-5 shadow-xl hover:scale-105 transition-all flex flex-col justify-between items-center text-white">
+        <Link href="/editTask" className="group rounded-xl shadow-md flex align-center justify-between bg-white shadow-xl hover:scale-105 transition-all flex flex-col justify-between items-center text-black">
           <Plus className="w-8 h-8 mb-2 group-hover:rotate-90 transition-transform" />
           <span className="font-bold text-sm">New Task</span>
         </Link>
