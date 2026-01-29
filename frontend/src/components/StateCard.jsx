@@ -8,7 +8,7 @@ export default function StateCard({
     return (
         <div className={`rounded-xl p-4 items-center shadow-md flex align-center justify-between ${bg}`}>
             <div>
-                <p className="text-sm opacity-80 font-black>{title}</p>
+                <p className="text-sm opacity-80 font-black">{title}</p>
                 <p className={`text-2xl font-bold ${text}`}>{value}</p>
             </div>
             <div className={`text-4xl opacity-90`}>
