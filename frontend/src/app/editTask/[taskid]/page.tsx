@@ -4,6 +4,8 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Edit2, Save, X, Calendar, Flag, Tag, FileText } from "lucide-react";
 import { TaskService } from "../../../services/task.service"; // cite: 41
+import { getAIResponse } from "../../../services/aiAPI";
+
 
 export default function EditTaskPage({ params }) {
     const router = useRouter();
@@ -18,6 +20,37 @@ export default function EditTaskPage({ params }) {
         priority: "medium",
         status: "pending"
     });
+
+    const [aiInsight, setAiInsight] = useState(null);
+    const [aiLoading, setAiLoading] = useState(false);
+
+    const runAIAnalysis = async (newStatus) => {
+        if(!taskData.dueDate) return;
+        setAiLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const today = new Date();
+            const due = new Date(taskData.dueDate);
+            const dayLeft = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+            const context = `
+            Task title: ${taskData.title}
+            Task status: ${newStatus}
+            Days left until deadline: ${dayLeft}
+            Give a short productivity suggestion based on this status and deadline.`;
+            
+            const res = await getAIResponse(context, taskData.dueDate, token);
+            if(res.success){
+                setAiInsight(res.suggestion.reason);
+            }
+        }catch(err){
+            console.error("AI analysis failed:", err.message);
+        }
+        finally{
+            setAiLoading(false);
+        }
+    }
+
+
 
     // 1. Fetch initial task data on mount
     useEffect(() => {
@@ -104,12 +137,30 @@ export default function EditTaskPage({ params }) {
                             <select
                                 className="w-full px-5 py-3 border-2 border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
                                 value={taskData.status}
-                                onChange={(e) => setTaskData({...taskData, status: e.target.value})}
+                               onChange={(e) => {
+                                const newStatus = e.target.value;
+                                setTaskData({ ...taskData, status: newStatus });
+                                runAIAnalysis(newStatus);
+                               }}
+
+                            
                             >
                                 <option value="pending">Pending</option>
                                 <option value="in-progress">In Progress</option>
                                 <option value="completed">Completed</option>
                             </select>
+                            {aiLoading && (
+    <p className="text-sm text-gray-500 mt-2">
+        🤖 AI is analyzing your task...
+    </p>
+)}
+
+{aiInsight && (
+    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+        🤖 <b>AI Suggestion:</b> {aiInsight}
+    </div>
+)}
+
                         </div>
                     </div>
 

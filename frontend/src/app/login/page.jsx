@@ -28,6 +28,7 @@ export default function LoginPage() {
             
             if (res.ok) {
                 setAuthData(data); // Stores name, email, and token
+                localStorage.setItem("token", data.token);
                 window.location.href = "/dashboard"; 
             } else {
                 setError(data.message || "Invalid credentials");

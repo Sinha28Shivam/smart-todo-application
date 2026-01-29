@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Sparkles, Calendar, Flag, Tag, FileText } from "lucide-react";
 import { TaskService } from "../../services/task.service";
+import { getAIResponse } from "../../services/aiAPI";
 
 export default function AddTaskPage() {
     const router = useRouter();
@@ -15,6 +16,9 @@ export default function AddTaskPage() {
         priority: "medium",
         status: "pending"
     });
+
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiSuggestion, setAiSuggestion] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,6 +32,34 @@ export default function AddTaskPage() {
             setIsLoading(false);
         }
     };
+
+    const handleAISuggestion = async () => {
+        if(!taskData.description || !taskData.dueDate){
+            alert("Please provide both description and due date for AI suggestions.");
+            return;
+        } 
+
+        setAiLoading(true);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await getAIResponse(
+                taskData.description,
+                taskData.dueDate,
+                token
+            );
+            if(res.success){
+                setTaskData(prev => ({
+                    ...prev,
+                    priority: res.suggestion.priority
+                }));
+                setAiSuggestion(res.suggestion.reason);
+            }
+        }catch(err){
+            alert("Failed to get AI suggestion: " + err.message);
+        }finally{
+            setAiLoading(false);
+        }
+    }
 
     return (
         <main className="max-w-4xl mx-auto p-6 animate-fadeIn">
@@ -66,6 +98,24 @@ export default function AddTaskPage() {
                             onChange={(e) => setTaskData({...taskData, description: e.target.value})}
                         />
                     </div>
+
+                    <button
+    type="button"
+    onClick={handleAISuggestion}
+    disabled={aiLoading}
+    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow hover:scale-105 transition-all disabled:opacity-50"
+>
+    <Sparkles className="w-4 h-4" />
+    {aiLoading ? "Thinking..." : "AI Suggest Priority"}
+</button>
+
+{aiSuggestion && (
+    <div className="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-sm text-indigo-800">
+        🤖 <b>AI Reason:</b> {aiSuggestion}
+    </div>
+)}
+
+
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Due Date */}
