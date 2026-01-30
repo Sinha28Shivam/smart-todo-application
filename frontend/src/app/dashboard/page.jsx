@@ -2,19 +2,26 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, ListTodo, Edit2, Trash2, Calendar, Flag, Sparkles } from "lucide-react";
+import { Plus, ListTodo, Edit2, Trash2, Calendar } from "lucide-react";
 import StateCard from "../../components/StateCard";
-import { TaskService } from "../../services/task.service"; // cite: 41
+import FilterBar from "../../components/FilterBar"; // Import the new component
+import { TaskService } from "../../services/task.service";
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState([]);
   const [stats, setStats] = useState({ total: 0, pending: 0, inProgress: 0, completed: 0, rate: 0 });
+  const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("createdAt");
 
   const fetchAllData = async () => {
     try {
-      const data = await TaskService.getTasks(); // cite: 41
+      // Create query string for backend filtering
+      const query = `?status=${filter}&sortBy=${sortBy}`;
+      const data = await TaskService.getTasksWithFilters(query);
+      
       setTasks(data);
       
+      // Keep stats based on the full fetched set or separate call
       const total = data.length;
       const completed = data.filter(t => t.status === "completed").length;
       setStats({
@@ -29,11 +36,14 @@ export default function DashboardPage() {
     }
   };
 
-  useEffect(() => { fetchAllData(); }, []);
+  // Re-fetch data whenever filter or sort options change
+  useEffect(() => { 
+    fetchAllData(); 
+  }, [filter, sortBy]);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      await TaskService.deleteTask(id); // cite: 41
+      await TaskService.deleteTask(id);
       fetchAllData();
     }
   };
@@ -51,16 +61,24 @@ export default function DashboardPage() {
         <StateCard title="Pending" value={stats.pending} icon="⏳" />
         <StateCard title="Active" value={stats.inProgress} icon="⚡" />
         <StateCard title="Done" value={stats.completed} icon="✅" />
-        <StateCard title="Rate" value={`${stats.rate}%`} icon="📊"  text="text-black" />
+        <StateCard title="Rate" value={`${stats.rate}%`} icon="📊" text="text-black" />
         
-        {/* Create Task Button Card */}
         <Link href="/editTask" className="group rounded-xl shadow-md flex align-center justify-between bg-white shadow-xl hover:scale-105 transition-all flex flex-col justify-between items-center text-black">
           <Plus className="w-8 h-8 mb-2 group-hover:rotate-90 transition-transform" />
           <span className="font-bold text-sm">New Task</span>
         </Link>
       </section>
 
-      {/* 2. Task List Section */}
+      {/* 2. Filter Bar Component Call */}
+      <FilterBar 
+        filter={filter} 
+        setFilter={setFilter} 
+        sortBy={sortBy} 
+        setSortBy={setSortBy} 
+        tasks={tasks} 
+      />
+
+      {/* 3. Task List Section */}
       <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
         <div className="flex items-center gap-3 mb-8 border-b border-gray-100 pb-4">
           <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg text-white">
@@ -71,7 +89,7 @@ export default function DashboardPage() {
 
         <div className="space-y-4">
           {tasks.length === 0 ? (
-            <p className="text-center py-10 text-gray-400">No tasks found. Create one to get started!</p>
+            <p className="text-center py-10 text-gray-400">No tasks found. Adjust your filters or create a new one!</p>
           ) : (
             tasks.map((task) => (
               <div key={task._id} className="group flex items-center justify-between p-5 rounded-2xl border-2 border-gray-50 bg-white hover:border-indigo-200 hover:shadow-lg transition-all">
@@ -82,34 +100,25 @@ export default function DashboardPage() {
                       {task.title}
                     </h3>
                   </div>
-
-                  {/* Task Description Display */}
-        {task.description && (
-          <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {task.description}
-            </p>
-          </div>
-        )}
+                  {task.description && (
+                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                      <p className="text-sm text-gray-600 leading-relaxed">{task.description}</p>
+                    </div>
+                  )}
                   <div className="flex items-center gap-4 text-xs text-gray-500">
-                    <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No date'}</span>
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" /> 
+                      {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : 'No date'}
+                    </span>
                     <span className="uppercase font-semibold px-2 py-0.5 bg-gray-100 rounded-md text-[10px]">{task.status}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Link 
-                    href={`/editTask/${task._id}`} 
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors"
-                    aria-label="Edit task"
-                  >
+                  <Link href={`/editTask/${task._id}`} className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors">
                     <Edit2 className="w-5 h-5" />
                   </Link>
-                  <button 
-                    onClick={() => handleDelete(task._id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                    aria-label="Delete task"
-                  >
+                  <button onClick={() => handleDelete(task._id)} className="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-colors">
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>

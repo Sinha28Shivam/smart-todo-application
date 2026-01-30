@@ -58,16 +58,18 @@ export async function getTaskWithFilters(request){
     };
 
     // filtering
-    if(status){
+    if(status && status !== "all"){
         if(!ALLOWED_STATUS.includes(status)){
             return [];
+            // query.status = status;
         }
         query.status = status;
     }
 
-    if(priority){
+    if(priority && priority !== "all"){
         if(!ALLOWED_PRIORITY.includes(priority)){
             return [];
+            // query.priority = priority;
         }
         query.priority = priority;
     }

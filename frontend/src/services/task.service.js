@@ -24,4 +24,9 @@ export const TaskService = {
             method: "DELETE",
         });
     },
+
+    getTasksWithFilters(query = ""){
+        const endpoint = query ? `/tasks/filter${query}` : '/tasks';
+        return ApiRequest(endpoint);
+    }
 }
