@@ -3,26 +3,36 @@ import { logout } from "../utils/auth";
 
 export async function ApiRequest(endpoint, options = {}) {
     const token = typeof window !== "undefined"
-    ? localStorage.getItem("token")
-    : null;
+        ? localStorage.getItem("token")
+        : null;
 
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        ...options,
+    const headers = {
+        ...(token && { Authorization: `Bearer ${token}` }),
     };
 
-    const response = await fetch(`${BASE_URL}${endpoint}`, config);
+    // ✅ Add Content-Type ONLY if body exists
+    if (options.body) {
+        headers["Content-Type"] = "application/json";
+    }
 
-    if(!response.ok){
-        if(response.status === 401){
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        headers,
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
             logout();
             window.location.href = "/login";
         }
+
         const error = await response.json();
         throw new Error(error.message || "API request failed");
+    }
+
+    // ✅ DELETE may return no content
+    if (response.status === 204) {
+        return null;
     }
 
     return response.json();

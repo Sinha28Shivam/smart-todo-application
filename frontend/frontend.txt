@@ -50,3 +50,22 @@ frontend/
 ├── .env.local
 ├── package.json
 └── README.md
+
+
+Step1: docker pull ollama/ollama
+step2: 
+docker run -d \
+  --name ollama \
+  -p 11434:11434 \
+  -v ollama-data:/root/.ollama \
+  ollama/ollama
+
+
+Step3: Download model
+
+docker exec -it ollama ollama pull llama3.2:3b
+
+Step4: 
+
+docker exec -it ollama ollama list
+

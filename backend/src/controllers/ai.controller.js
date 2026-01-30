@@ -1,4 +1,4 @@
-import ollama from 'ollama'
+// import fetch from 'node-fetch';
 
 export async function getAIResponse(req, reply){
     const { description, dueDate } = req.body;
@@ -8,14 +8,33 @@ export async function getAIResponse(req, reply){
     Respond only in JSON format: {"priority": "...", "reason": "..."}`;
 
     try {
-        const response = await ollama.chat({
-            model: 'llama3.2:3b',
-            messages: [{ role: 'user', content: prompt }],
-            format: 'json',
+        const res = await fetch("http://localhost:11434/api/generate", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: "llama3.2:3b",
+                prompt: prompt,
+                stream:false
+            })
         });
+        const data = await res.json();
+        
+       
+        if(!res.ok){
+            throw new Error(`AI service error: ${res.status}`);
+        }
 
-        const suggestion = JSON.parse(response.message.content);
-        reply.send({ success: true, suggestion });
+
+        const match = data.response.match(/\{[\s\S]*\}/);
+         if(!match){
+            throw new Error('Invalid AI response format');
+        }
+
+
+      
+        const aiResponse = JSON.parse(match[0]);
+        reply.send({ success: true, suggestion: aiResponse });
+        
     }catch (error){
         req.log.error(error);
         reply.status(500).send({ success: false, message: 'AI processing failed' });

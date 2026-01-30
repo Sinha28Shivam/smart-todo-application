@@ -35,7 +35,7 @@ The AI engine runs using **Ollama (LLaMA 3.2)** inside **Docker**, ensuring a cl
 
 ## 🏗️ System Architecture
 
-![System Architecture](/docs/architecturesmart.svg)
+![System Architecture](/docs/smarttodo.drawio.svg)
 
 
 ### Architecture Flow
@@ -58,6 +58,27 @@ The AI engine runs using **Ollama (LLaMA 3.2)** inside **Docker**, ensuring a cl
 - Fastify
 - MongoDB
 - JWT Authentication
+
+## ⚙️ Setup
+### Backend
+```
+cd backend
+npm install
+npm run dev
+```
+Create a ```.env``` file in the root folder and add enviroment variables
+```
+PORT=5000
+MONGO_URI=url_for_mongodb_connection
+JWT_SECRET=jwt_secret
+```
+### Frontend
+```
+cd ..
+cd frontend
+npm install
+npm run dev
+```
 
 ### AI & DevOps
 - Ollama (LLaMA 3.2)
