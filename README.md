@@ -35,7 +35,7 @@ The AI engine runs using **Ollama (LLaMA 3.2)** inside **Docker**, ensuring a cl
 
 ## 📐 System Architecture
 
-/docs/Smart-todo-application.drawio.png
+![System Architecture](/docs/Smart-todo-application.drawio.png)
 
 
 ### Architecture Flow
