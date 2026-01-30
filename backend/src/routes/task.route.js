@@ -3,7 +3,9 @@ import {
     deleteTask,
     getAllTasks,
     updateTask,
-    getTaskWithFilters
+    getTaskWithFilters,
+    getTaskSummary,
+    
 } from '../controllers/task.controller.js';
 
 
@@ -15,4 +17,5 @@ export async function taskRoutes(fastify){
     fastify.put('/tasks/:id', updateTask)
     fastify.delete('/tasks/:id', deleteTask)
     fastify.get('/tasks/filter', getTaskWithFilters)
+    fastify.get('/tasks/summary', getTaskSummary)
 }

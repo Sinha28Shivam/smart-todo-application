@@ -103,3 +103,16 @@ export async function getTaskWithFilters(request){
 
     return tasks;
 }
+
+// task summarizer and suggestion of homepage
+export async function getTaskSummary(request, reply){
+    const tasks = await Task.find({ userId: request.user.id }).lean();
+
+    if(tasks.length === 0){
+        return reply.send({ summary: "No tasks found. Start by creating new one" });
+    }
+    const taskList = tasks.map(t => `- ${t.title} (${t.status}, Priority: ${t.priority})`).join('\n');
+    const prompt = `Summarize these tasks and give 3 productivity tips based on them:\n${taskList}`;
+
+    reply.send({ tasks, prompt });
+}
