@@ -14,17 +14,32 @@ export default function AIFloatingPanel() {
       setLoading(true);
       setIsOpen(true);
       try {
-        // 1. Get the prompt from the backend
-        const data = await ApiRequest("/tasks/summary");
         const token = localStorage.getItem("token");
         
-        // 2. Send the prompt to your AI suggest endpoint
-        const res = await getAIResponse(data.prompt, "N/A", token);
-        if (res.success) {
-          setSummary(res.suggestion.reason);
+        // 1. Get the prompt from the backend
+        const data = await ApiRequest("/tasks/summary");
+        
+        // 2. Send the prompt directly to Ollama via backend
+        const res = await fetch("http://localhost:5000/api/ai/suggest", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            description: data.prompt,
+            dueDate: new Date().toISOString()
+          })
+        });
+        
+        const aiResponse = await res.json();
+        if (aiResponse.success) {
+          setSummary(aiResponse.suggestion.reason || aiResponse.suggestion.priority);
+        } else {
+          setSummary("Unable to generate insights at this time.");
         }
       } catch (err) {
-        setSummary("Failed to load AI insights. Make sure you are logged in.");
+        setSummary("Failed to load AI insights. Make sure you are logged in and the AI service is running.");
       } finally {
         setLoading(false);
       }

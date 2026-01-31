@@ -14,24 +14,27 @@ export async function getAIResponse(req, reply){
             body: JSON.stringify({
                 model: "llama3.2:3b",
                 prompt: prompt,
-                stream:false
+                stream: false
             })
         });
-        const data = await res.json();
         
-       
         if(!res.ok){
             throw new Error(`AI service error: ${res.status}`);
         }
 
+        // Get text response first, then parse
+        const text = await res.text();
+        
+        // Handle potential NDJSON or multiple JSON objects
+        const lines = text.trim().split('\n');
+        const lastLine = lines[lines.length - 1];
+        const data = JSON.parse(lastLine);
 
         const match = data.response.match(/\{[\s\S]*\}/);
-         if(!match){
+        if(!match){
             throw new Error('Invalid AI response format');
         }
 
-
-      
         const aiResponse = JSON.parse(match[0]);
         reply.send({ success: true, suggestion: aiResponse });
         

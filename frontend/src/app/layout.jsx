@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import AuthChecking from "../components/AuthChecking";
+import AIFloatingPanel from "../components/floatingPanel";
 
 export default function RootLayout({ children }) {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
               {children}
             </div>
           </AuthChecking>
+          <AIFloatingPanel />
         </div>
       </body>
     </html>
