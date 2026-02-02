@@ -100,21 +100,21 @@ export default function AddTaskPage() {
                     </div>
 
                     <button
-    type="button"
-    onClick={handleAISuggestion}
-    disabled={aiLoading}
-    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow hover:scale-105 transition-all disabled:opacity-50"
->
-    <Sparkles className="w-4 h-4" />
-    {aiLoading ? "Thinking..." : "AI Suggest Priority"}
-</button>
-
-{aiSuggestion && (
-    <div className="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-sm text-indigo-800">
-        🤖 <b>AI Reason:</b> {aiSuggestion}
-    </div>
-)}
-
+                    type="button"
+                    onClick={handleAISuggestion}
+                    disabled={aiLoading}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold                       shadow hover:scale-105 transition-all disabled:opacity-50"
+                    >
+                    <Sparkles className="w-4 h-4" />
+                    {aiLoading ? "Thinking..." : "AI Suggest Priority"}
+                    </button>
+                    
+                    {aiSuggestion && (
+                    <div className="mt-3 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-sm text-indigo-800">
+                        🤖 <b>AI Reason:</b> {aiSuggestion}
+                    </div>
+                    )}
+                
 
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

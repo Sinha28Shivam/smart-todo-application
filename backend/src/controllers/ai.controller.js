@@ -16,6 +16,7 @@ export async function getAIResponse(req, reply){
                 prompt: prompt,
                 stream: false
             })
+            
         });
         
         if(!res.ok){
