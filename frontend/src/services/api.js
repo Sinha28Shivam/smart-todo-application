@@ -10,7 +10,7 @@ export async function ApiRequest(endpoint, options = {}) {
         ...(token && { Authorization: `Bearer ${token}` }),
     };
 
-    // ✅ Add Content-Type ONLY if body exists
+    // Add Content-Type ONLY if body exists
     if (options.body) {
         headers["Content-Type"] = "application/json";
     }
@@ -30,7 +30,7 @@ export async function ApiRequest(endpoint, options = {}) {
         throw new Error(error.message || "API request failed");
     }
 
-    // ✅ DELETE may return no content
+    // DELETE may return no content
     if (response.status === 204) {
         return null;
     }

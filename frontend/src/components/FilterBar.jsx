@@ -50,7 +50,6 @@ export default function FilterBar({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Status Filter - Figma Design Pattern */}
         <fieldset>
           <legend className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-3">
             <span 

@@ -7,7 +7,7 @@ import { TaskService } from "../../../services/task.service"; // cite: 41
 import { getAIResponse } from "../../../services/aiAPI";
 
 
-export default function EditTaskPage({ params }) {
+export default function EditTaskPage({ params }: { params: Promise<{ taskid: string }> }) {
     const router = useRouter();
     const unwrappedParams = use(params);
     const taskid = unwrappedParams.taskid; // cite: 10
@@ -24,14 +24,14 @@ export default function EditTaskPage({ params }) {
     const [aiInsight, setAiInsight] = useState(null);
     const [aiLoading, setAiLoading] = useState(false);
 
-    const runAIAnalysis = async (newStatus) => {
+    const runAIAnalysis = async (newStatus: string) => {
         if(!taskData.dueDate) return;
         setAiLoading(true);
         try {
             const token = localStorage.getItem("token");
             const today = new Date();
             const due = new Date(taskData.dueDate);
-            const dayLeft = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+            const dayLeft = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
             const context = `
             Task title: ${taskData.title}
             Task status: ${newStatus}
@@ -150,16 +150,16 @@ export default function EditTaskPage({ params }) {
                                 <option value="completed">Completed</option>
                             </select>
                             {aiLoading && (
-    <p className="text-sm text-gray-500 mt-2">
-        🤖 AI is analyzing your task...
-    </p>
-)}
+                                <p className="text-sm text-gray-500 mt-2">
+                                    🤖 AI is analyzing your task...
+                                </p>
+                            )}
 
-{aiInsight && (
-    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
-        🤖 <b>AI Suggestion:</b> {aiInsight}
-    </div>
-)}
+                            {aiInsight && (
+                                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-800">
+                                    🤖 <b>AI Suggestion:</b> {aiInsight}
+                                </div>
+                            )}
 
                         </div>
                     </div>
