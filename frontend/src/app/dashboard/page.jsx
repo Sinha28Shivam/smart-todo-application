@@ -6,6 +6,7 @@ import { Plus, ListTodo, Edit2, Trash2, Calendar } from "lucide-react";
 import StateCard from "../../components/StateCard";
 import FilterBar from "../../components/FilterBar"; // Import the new component
 import { TaskService } from "../../services/task.service";
+import { importCalender } from "../../services/calender.service";
 
 export default function DashboardPage() {
   const [tasks, setTasks] = useState([]);
@@ -13,6 +14,9 @@ export default function DashboardPage() {
   const [filter, setFilter] = useState("all");
   const [sortBy, setSortBy] = useState("createdAt");
   const [announcement, setAnnouncement] = useState("");
+  const [calenderUrl, setCalenderUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const fetchAllData = async () => {
     try {
@@ -51,8 +55,34 @@ export default function DashboardPage() {
       await TaskService.deleteTask(id);
       fetchAllData();
       setAnnouncement("Task deleted successfully");
-    }
+    };
   };
+
+  
+  const handleCalendarImport = async () => {
+  if (!calenderUrl.trim()) {
+    setMessage("Please enter a calendar URL");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setMessage("");
+
+    const res = await importCalender(calenderUrl);
+
+    setMessage(res?.message || "Calendar imported successfully");
+    setCalenderUrl("");
+
+    // 🔄 Refresh tasks after import
+    await fetchAllData();
+  } catch (err) {
+    console.error("Calendar import failed:", err);
+    setMessage("Failed to import calendar. Please check the URL.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="max-w-7xl mx-auto p-6 space-y-8 animate-fadeIn" role="main" aria-label="Dashboard">
@@ -121,6 +151,47 @@ export default function DashboardPage() {
           <span className="font-bold text-sm">New Task</span>
         </Link>
       </section>
+
+      {/* Calendar Import Section */}
+<section
+  className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-white/20 p-6"
+  aria-label="Calendar Import"
+>
+  <div className="flex items-center gap-3 mb-4">
+    <div className="p-2 bg-indigo-600 rounded-lg text-white">
+      <Calendar className="w-5 h-5" />
+    </div>
+    <h2 className="text-xl font-bold text-gray-800">
+      Import Calendar
+    </h2>
+  </div>
+
+  <div className="flex flex-col md:flex-row gap-3 text-gray-800">
+    <input
+      type="url"
+      value={calenderUrl}
+      onChange={(e) => setCalenderUrl(e.target.value)}
+      placeholder="Paste calendar URL here..."
+      className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      aria-label="Calendar URL"
+    />
+
+    <button
+      onClick={handleCalendarImport}
+      disabled={loading}
+      className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition"
+      type="button"
+    >
+      {loading ? "Importing..." : "Import"}
+    </button>
+  </div>
+
+  {message && (
+    <p className="mt-3 text-sm text-gray-600" role="status">
+      {message}
+    </p>
+  )}
+</section>
 
       {/* 2. Filter Bar Component Call */}
       <FilterBar 

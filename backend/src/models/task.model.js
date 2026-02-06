@@ -28,6 +28,11 @@ const taskSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+
+    externalEventId: {
+        type: String,
+        index: true
     }
 
 });
