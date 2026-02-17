@@ -1,4 +1,4 @@
-// import fetch from 'node-fetch';
+import fetch from 'node-fetch';
 
 export async function getAIResponse(req, reply){
     const { description, dueDate } = req.body;

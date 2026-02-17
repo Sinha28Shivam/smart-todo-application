@@ -4,7 +4,9 @@ const userSchema = new mongoose.Schema({
     name: String,
     email: { type: String, unique: true },
     password: String,
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    calenderUrl: String
+
 });
 
 export const User = mongoose.model("User", userSchema);

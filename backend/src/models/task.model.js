@@ -11,7 +11,7 @@ const taskSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["pending", "in-progress", "completed"],
-        default: "todo"
+        default: "pending"
     },
     priority: {
         type: String,
@@ -37,4 +37,5 @@ const taskSchema = new mongoose.Schema({
 
 });
 
+taskSchema.index({ userId: 1, externalEventId: 1 }, { unique: true });
 export const Task = mongoose.model("Task", taskSchema);

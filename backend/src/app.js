@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import jwt from 'fastify-jwt';
+import jwt from '@fastify/jwt';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
 
@@ -23,8 +23,8 @@ app.decorate('authenticate', async (request, reply) => {
     console.log("Authe Header: ", request.headers.authorization);
     try{
         await request.jwtVerify();
-    }catch{
-        reply.code(401).send({ message: 'Unauthorized Access' });
+    }catch(error){
+        return reply.code(401).send({ message: 'Unauthorized Access' });
     }
 
 })
