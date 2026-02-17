@@ -1,4 +1,5 @@
 import { Task } from "../models/task.model.js";
+import { pagination } from "../utils/pagination.js";
 
 // this is used for strict validation
 const ALLOWED_STATUS = ["pending", "in-progress", "completed"];
@@ -20,7 +21,12 @@ export async function createTask(request, reply){
 
 // Get all tasks for a user
 export async function getAllTasks(request){
-    return await Task.find({ userId: request.user.id });
+   const paging = pagination(request);
+   const tasks = await Task.find({
+    userId: request.user.id
+   }).skip(paging.skip).limit(paging.limit);
+
+   return tasks;
 }
 
 // Update a task
@@ -51,6 +57,7 @@ export async function deleteTask(request, reply){
 
 // Get task with filtering and sorting
 export async function getTaskWithFilters(request){
+    const paging = pagination(request);
     const { status, priority, sortBy, from, to } = request.query;
     
     const query = {
@@ -80,26 +87,26 @@ export async function getTaskWithFilters(request){
         if(to)query.dueDate.$lte = new Date(to);
     }
 
-    let tasks = await Task.find(query).lean();
+    // let tasks = await Task.find(query).lean();
 
     // sorting
-    if(sortBy === "priority"){
-        const order = { high: 1, medium: 2, low: 3 };
-        tasks.sort((a, b) => order[a.priority] - order[b.priority]);
-    }
+    // if(sortBy === "priority"){
+    //     const order = { high: 1, medium: 2, low: 3 };
+    //     tasks.sort((a, b) => order[a.priority] - order[b.priority]);
+    // }
+
+    let sortObject = {};
 
     if (sortBy === "dueDate"){
-        tasks.sort(
-            (a, b) => new Date(a.dueDate) - new Date(b.dueDate)
-        );
+       sortObject.dueDate = 1; // ascending
     }
 
+
     if (sortBy === "createdAt"){
-        tasks.sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-        );
-    
+        sortObject.createdAt = 1; // ascending
     }
+
+    const tasks = await Task.find(query).sort(sortObject).skip(paging.skip).limit(paging.limit).lean();
 
     return tasks;
 }

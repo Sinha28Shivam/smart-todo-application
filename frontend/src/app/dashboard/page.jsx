@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, ListTodo, Edit2, Trash2, Calendar } from "lucide-react";
+import { Plus, ListTodo, Edit2, Trash2, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import StateCard from "../../components/StateCard";
 import FilterBar from "../../components/FilterBar"; // Import the new component
 import { TaskService } from "../../services/task.service";
@@ -18,13 +18,27 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // --- Pagination State ----
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const [hasMore, setHasMore] = useState(true); // to disable "Next" button
+
+
   const fetchAllData = async () => {
     try {
+      
       // Create query string for backend filtering
-      const query = `?status=${filter}&sortBy=${sortBy}`;
+      const query = `?status=${filter}&sortBy=${sortBy}&page=${page}&limit=${limit}`;
       const data = await TaskService.getTasksWithFilters(query);
       
       setTasks(data);
+
+      // --- Paginatin logic ---
+      if(data.length < limit){
+        setHasMore(false); // No more data to fetch
+      }else{
+        setHasMore(true); // More data might be available
+      }
       
       // Keep stats based on the full fetched set or separate call
       const total = data.length;
@@ -48,6 +62,10 @@ export default function DashboardPage() {
   // Re-fetch data whenever filter or sort options change
   useEffect(() => { 
     fetchAllData(); 
+  }, [filter, sortBy, page]);
+
+  useEffect(() => {
+    setPage(1);
   }, [filter, sortBy]);
 
   const handleDelete = async (id) => {
@@ -299,6 +317,34 @@ export default function DashboardPage() {
             </ul>
           )}
         </div>
+
+        {/* --- PAGINATION CONTROLS (NEW) --- */}
+        <div className="flex items-center justify-between mt-8 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </button>
+          
+          <span className="text-sm font-medium text-gray-500">
+            Page {page}
+          </span>
+
+          <button
+            onClick={() => setPage((p) => p + 1)}
+            disabled={!hasMore || tasks.length === 0}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+        {/* ---------------------------------- */}
+
+
       </section>
     </main>
   );

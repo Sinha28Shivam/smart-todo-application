@@ -4,7 +4,7 @@ import { importCalenderForUser } from "./calendar.service.js";
 
 export function startCalenderSyncCron() {
 
-    cron.schedule("0 * * * *", async () => {
+    cron.schedule("* * * * *", async () => {
 
         console.log("Calendar sync triggered at:", new Date());
 
