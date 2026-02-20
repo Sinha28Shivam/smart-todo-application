@@ -19,6 +19,11 @@ const taskSchema = new mongoose.Schema({
         default: "medium"
     },
     dueDate: Date,
+    // notification sent status
+    notificationSent: {
+        type: Boolean,
+        default: false
+    },
 
     userId: {
         type: mongoose.Schema.Types.ObjectId,
