@@ -2,10 +2,36 @@ import Fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import cors from '@fastify/cors';
 import dotenv from 'dotenv';
+import swagger from '@fastify/swagger';
+import swaggerUI from '@fastify/swagger-ui';
 
 dotenv.config();
 
 export const app = Fastify({ logger: true });
+await app.register(swagger, {
+    openapi: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Smart To-Do API',
+        description: 'API documentation for Smart To-Do Application',
+        version: '1.0.0'
+      },
+      servers: [
+        {
+  url: 'http://localhost:5000',
+          description: 'Development server'
+        }
+      ]
+    }
+  });
+
+  await app.register(swaggerUI, {
+    routePrefix: '/docs',
+    uiConfig: {
+      docExpansion: 'list',
+      deepLinking: false
+    }
+  });
 
 // CORS Setup
 await app.register(cors, {
