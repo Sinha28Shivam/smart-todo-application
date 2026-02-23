@@ -9,9 +9,19 @@ export async function authRoutes(fastify){
             type: 'object',
             required: ['name', 'email', 'password'],
             properties: {
-              name: { type: 'string' },
-              email: { type: 'string' },
-              password: { type: 'string' }
+              name: { 
+                type: 'string',
+                minLength: 3        
+               },
+              email: {
+                 type: 'string',
+                format: 'email'
+             },
+              password: { 
+                type: 'string',
+                minLength: 8,
+                pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$'
+        }
             }
           },
           response: {
@@ -25,7 +35,7 @@ export async function authRoutes(fastify){
           }
         }
       }, registerUser);
-      
+
     fastify.post('/login', {
         schema: {
           description: 'Login user',
@@ -34,8 +44,15 @@ export async function authRoutes(fastify){
             type: 'object',
             required: ['email', 'password'],
             properties: {
-              email: { type: 'string' },
-              password: { type: 'string' }
+              email: { type: 'string',
+                       format: 'email',
+                       
+                    
+               },
+              password: { type: 'string',
+                           minLength: 4,
+
+               }
             }
           },
           response: {
