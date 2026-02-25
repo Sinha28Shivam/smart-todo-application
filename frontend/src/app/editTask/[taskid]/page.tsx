@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Edit2, Save, X, Calendar, Flag, Tag, FileText } from "lucide-react";
+import { Edit2, Save, Flag, Tag } from "lucide-react";
 import { TaskService } from "../../../services/task.service"; // cite: 41
 import { getAIResponse } from "../../../services/aiAPI";
 
