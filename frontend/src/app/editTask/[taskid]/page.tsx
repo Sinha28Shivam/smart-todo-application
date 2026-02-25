@@ -43,7 +43,13 @@ export default function EditTaskPage({ params }: { params: Promise<{ taskid: str
                 setAiInsight(res.suggestion.reason);
             }
         }catch(err){
-            console.error("AI analysis failed:", err.message);
+            if(err instanceof Error){
+                console.error("AI analysis failed:", err.message);
+
+            }else{
+                console.error("AI analysis failed with unknown error");
+            }
+
         }
         finally{
             setAiLoading(false);
