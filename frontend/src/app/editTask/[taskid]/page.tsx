@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Edit2, Save, X, Calendar, Flag, Tag, FileText } from "lucide-react";
+import { Edit2, Save, Flag, Tag } from "lucide-react";
 import { TaskService } from "../../../services/task.service"; // cite: 41
 import { getAIResponse } from "../../../services/aiAPI";
 
@@ -43,7 +43,13 @@ export default function EditTaskPage({ params }: { params: Promise<{ taskid: str
                 setAiInsight(res.suggestion.reason);
             }
         }catch(err){
-            console.error("AI analysis failed:", err.message);
+            if(err instanceof Error){
+                console.error("AI analysis failed:", err.message);
+
+            }else{
+                console.error("AI analysis failed with unknown error");
+            }
+
         }
         finally{
             setAiLoading(false);
@@ -57,7 +63,7 @@ export default function EditTaskPage({ params }: { params: Promise<{ taskid: str
         async function loadTask() {
             try {
                 const tasks = await TaskService.getTasks(); // cite: 41
-                const currentTask = tasks.find(t => t._id === taskid);
+                const currentTask = tasks.find((t: any) => t._id === taskid);
                 if (currentTask) {
                     setTaskData({
                         title: currentTask.title,
@@ -68,14 +74,18 @@ export default function EditTaskPage({ params }: { params: Promise<{ taskid: str
                     });
                 }
             } catch (err) {
-                console.error("Failed to load task:", err.message);
+                if(err instanceof Error){
+                    console.error("Failed to load task:", err.message);
+                }else{
+                    console.error("Failed to load task with unknown error");
+                }
             }
         }
         loadTask();
     }, [taskid]);
 
     // 2. Handle the update request
-    const handleUpdate = async (e) => {
+    const handleUpdate = async (e: any) => {
         e.preventDefault();
         setIsLoading(true);
         try {
@@ -83,7 +93,11 @@ export default function EditTaskPage({ params }: { params: Promise<{ taskid: str
             await TaskService.updateTask(taskid, taskData); 
             router.push("/dashboard"); // Redirect on success
         } catch (err) {
-            alert("Update failed: " + err.message);
+            if(err instanceof Error){
+                alert("Update failed: " + err.message);
+            }else{
+                alert("Update failed with unknown error");
+            }
         } finally {
             setIsLoading(false);
         }

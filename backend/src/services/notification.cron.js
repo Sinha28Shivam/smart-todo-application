@@ -5,7 +5,7 @@ import { sendEmail } from './mail.service.js';
 
 export function startNotificationCron() {
     // runs every 10 minutes
-    cron.schedule("* * * * *", async () => {
+    cron.schedule("*/10 * * * *", async () => {
         console.log("Running notification cron job...");
 
         const now = new Date();
