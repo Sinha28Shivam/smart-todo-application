@@ -21,7 +21,16 @@ await app.register(swagger, {
   url: 'http://localhost:5000',
           description: 'Development server'
         }
-      ]
+      ],
+      components: {
+        securitySchemes: {
+          BearerAuth: {
+            type: 'http' ,
+            scheme: 'bearer',
+            bearerFormat: 'JWT'
+          }
+        }
+      }
     }
   });
 
