@@ -6,11 +6,14 @@ import  { aiRoutes } from "./routes/ai.route.js";
 import { calenderRoutes } from "./routes/calender.routes.js";
 import { startNotificationCron } from "./services/notification.cron.js";
 import { startCalenderSyncCron } from "./services/calenderSync.cron.js";
+import passportConfig from "./config/passport.js";
 
 
 
 async function startServer(){
     await connectDB();
+
+    await app.register(passportConfig);
 
     app.register(authRoutes, { prefix: '/api/auth' });
     app.register(taskRoutes, { prefix: '/api/'})

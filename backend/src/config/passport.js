@@ -1,5 +1,6 @@
 import passport from "@fastify/passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { User } from "../models/user.model.js";
 
 export default async function(fastify){
     passport.use(
@@ -14,27 +15,18 @@ export default async function(fastify){
 
                 try{
 
-                    const users = fastify.mongo.db.collection("users");
-
-                    let user = await users.findOne({
+                    let user = await User.findOne({
                         email: profile.emails[0].value
                     });
 
-                    if (!user){
-
-                        const newUser = {
+                    if(!user){
+                        user = await User.create({
                             name: profile.displayName,
                             email: profile.emails[0].value,
-                            picture: profile.photos[0].value,
-                            provider: "google" ,
-                            createdAT: new Date()
-                        };
-                        const result = await users.insertOne(newUser);
-                        user = {
-                            _id: result.insertedId,
-                            ...newUser
-                        };
+                            provider: "google",
+                        });
                     }
+                    
                     return done(null, user);
                 }
                 catch(error){
@@ -45,10 +37,6 @@ export default async function(fastify){
     );
     passport.registerUserSerializer(async(user)=> user._id);
     passport.registerUserDeserializer(async(id)=>{
-        return await fastify.mongo.db.collection("users").findOne({
-            _id: id
+        return await User.findById(id);
         });
-    });
-    fastify.register(passport.initialize());
-    fastify.register(passport.secureSession());
 }
