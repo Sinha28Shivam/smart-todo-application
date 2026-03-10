@@ -15,7 +15,7 @@ await app.register(fastifySecureSession, {
   key: Buffer.from("a" .repeat(32)), 
 });
 
-// await app.register(fastifyPassport.initialze());
+await app.register(fastifyPassport.initialize());
 await app.register(fastifyPassport.secureSession());
 
 await app.register(swagger, {
@@ -61,11 +61,12 @@ await app.register(cors, {
 
 // JWT Setup
 app.register(jwt, {
-    secret: process.env.JWT_SECRET
+    secret: process.env.JWT_SECRET,
+    decoratorName: 'jwtUser'
 });
 
 app.decorate('authenticate', async (request, reply) => {
-    console.log("Authe Header: ", request.headers.authorization);
+    console.log("Auth Header: ", request.headers.authorization);
     try{
         await request.jwtVerify();
     }catch(error){

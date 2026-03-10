@@ -74,17 +74,19 @@ export async function authRoutes(fastify){
 
       fastify.get("/api/auth/google",
          {
-          preValidation:fastify.passport.authenticate("google", {
+          preValidation:fastifyPassport.authenticate("google", {
               scope: ["profile", "email"],
 
           }),
+        },
+        async function (request, reply) {
+            // Passport handles the redirect, so this can stay empty.
         }
-        // async function(){}
       );
 
       fastify.get("/api/auth/google/callback",
         {
-          preValidation: fastify.passport.authenticate("google", {
+          preValidation: fastifyPassport.authenticate("google", {
             failureRedirect: "/login",
           }),
         },
