@@ -1,6 +1,8 @@
 import Fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import cors from '@fastify/cors';
+import fastifyPassport from "@fastify/passport"
+import fastifySecureSession from '@fastify/secure-session'; 
 import dotenv from 'dotenv';
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
@@ -8,6 +10,14 @@ import swaggerUI from '@fastify/swagger-ui';
 dotenv.config();
 
 export const app = Fastify({ logger: true });
+
+await app.register(fastifySecureSession, {
+  key: Buffer.from("a" .repeat(32)), 
+});
+
+// await app.register(fastifyPassport.initialze());
+await app.register(fastifyPassport.secureSession());
+
 await app.register(swagger, {
     openapi: {
       openapi: '3.0.0',

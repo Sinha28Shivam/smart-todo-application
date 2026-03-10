@@ -1,6 +1,11 @@
 import { registerUser, loginUser } from "../controllers/auth.controller.js";
+import fastifyPassport from "@fastify/passport";
+import { googleCallback } from "../controllers/auth.controller.js";
+
+
 
 export async function authRoutes(fastify){
+
     fastify.post('/register', {
         schema: {
           description: 'Register a new user',
@@ -36,33 +41,53 @@ export async function authRoutes(fastify){
         }
       }, registerUser);
 
-    fastify.post('/login', {
+    fastify.post("/login", {
         schema: {
-          description: 'Login user',
-          tags: ['Auth'],
+          description: "Login user",
+          tags: ["Auth"],
           body: {
-            type: 'object',
-            required: ['email', 'password'],
+            type: "object",
+            required: ["email", "password"],
             properties: {
-              email: { type: 'string',
-                       format: 'email',
-                       
-                    
-               },
-              password: { type: 'string',
-                           minLength: 4,
-
-               }
-            }
+              email: {
+                type: "string",
+                format: "email",
+              },
+              password: {
+                type: "string",
+                minLength: 4,
+              },
+            },
           },
           response: {
             200: {
-              type: 'object',
+              type: "object",
               properties: {
-                token: { type: 'string' }
+                token: { type: "string" },
               }
             }
           }
         }
-      }, loginUser);
+      },
+      loginUser
+    );
+
+      fastify.get("/api/auth/google",
+         {
+          preValidation:fastify.passport.authenticate("google", {
+              scope: ["profile", "email"],
+
+          }),
+        }
+        // async function(){}
+      );
+
+      fastify.get("/api/auth/google/callback",
+        {
+          preValidation: fastify.passport.authenticate("google", {
+            failureRedirect: "/login",
+          }),
+        },
+        googleCallback
+      );
 }

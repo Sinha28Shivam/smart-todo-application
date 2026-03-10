@@ -12,6 +12,11 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
+    const handleGoogleLogin = () => {
+        console.log("clicked");
+        window.location.href = "http://localhost:5000/api/auth/google";
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -89,6 +94,15 @@ export default function LoginPage() {
                             />
                         </div>
                     </div>
+
+                    <button
+                       type="button"
+                       onClick={handleGoogleLogin}
+                       className="w-full px-6 py-4 border border-gray-300 rounded-xl mb-4 bg-white text-black font-medium transition all 
+                       duration-200 hover:bg-gray-50 hover:scale-[1.02] hover:shadow-md active:scale-[0.98] font-medium"
+                    >
+                       Continue with Google
+                    </button>
 
                     <button 
                         type="submit" disabled={isLoading}
