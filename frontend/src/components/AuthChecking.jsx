@@ -13,7 +13,7 @@ export default function AuthChecking({ children }) {
 
     const INACTIVITY_LIMIT = 30 * 60 * 1000; // 30 minutes
 
-    const publicPaths = ["/login", "/signup", "/"];
+    const publicPaths = ["/login", "/signup", "/", "/oauth-success"];
 
     const handleAutoLogout = () =>  {
         console.log("User inactive for too long. Logging out...");

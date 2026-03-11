@@ -47,7 +47,7 @@ export async function loginUser(request, reply){
 }
 
 export async function googleCallback(req, reply){
- 
+ console.log("SUCCESS! User made it to the callback:", req.user);
     const user = req.user;
  
     const token = req.server.jwt.sign({
@@ -55,5 +55,5 @@ export async function googleCallback(req, reply){
         email: user.email
     });
  
-    reply.redirect(`http://localhost:5173/oauth-success?token=${token}`);
+    reply.redirect(`http://localhost:3000/oauth-success?token=${token}`);
 }
