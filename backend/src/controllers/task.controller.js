@@ -14,7 +14,7 @@ export async function createTask(request, reply){
         status: request.body.status,
         priority: request.body.priority,
         dueDate: request.body.dueDate,
-        userId: request.user.id // this will get from jwt
+        userId: request.jwtUser.id // this will get from jwt
     });
     reply.code(201).send(task);
 }
@@ -23,7 +23,7 @@ export async function createTask(request, reply){
 export async function getAllTasks(request){
    const paging = pagination(request);
    const tasks = await Task.find({
-    userId: request.user.id
+    userId: request.jwtUser.id
    }).skip(paging.skip).limit(paging.limit);
 
    return tasks;
@@ -34,7 +34,7 @@ export async function updateTask(request, reply){
     const { id } = request.params;
 
     const task = await Task.findOneAndUpdate(
-        { _id: id, userId: request.user.id },
+        { _id: id, userId: request.jwtUser.id },
         request.body,
         { new: true }
     );
@@ -48,7 +48,7 @@ export async function updateTask(request, reply){
 // Delete a task
 export async function deleteTask(request, reply){
     const { id } = request.params;
-    const task = await Task.findOneAndDelete({ _id: id, userId: request.user.id });
+    const task = await Task.findOneAndDelete({ _id: id, userId: request.jwtUser.id });
     if(!task){
         return reply.code(404).send({ message: 'Task not found' });
     }
@@ -61,7 +61,7 @@ export async function getTaskWithFilters(request){
     const { status, priority, sortBy, from, to } = request.query;
     
     const query = {
-        userId: request.user.id
+        userId: request.jwtUser.id
     };
 
     // filtering
@@ -113,7 +113,7 @@ export async function getTaskWithFilters(request){
 
 // task summarizer and suggestion of homepage
 export async function getTaskSummary(request, reply){
-    const tasks = await Task.find({ userId: request.user.id }).lean();
+    const tasks = await Task.find({ userId: request.jwtUser.id }).lean();
 
     if(tasks.length === 0){
         return reply.send({ summary: "No tasks found. Start by creating new one" });

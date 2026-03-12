@@ -26,7 +26,7 @@ function OAuthHandler() {
                 });
 
                 // Redirect to the dashboard
-                router.push("/dashboard");
+                window.location.href = "/dashboard";
             } catch (error) {
                 console.error("Failed to parse token:", error);
                 router.push("/login?error=invalid_token");

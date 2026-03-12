@@ -7,11 +7,19 @@ import { calenderRoutes } from "./routes/calender.routes.js";
 import { startNotificationCron } from "./services/notification.cron.js";
 import { startCalenderSyncCron } from "./services/calenderSync.cron.js";
 import passportConfig from "./config/passport.js";
+import mongoose from "mongoose";
 
 
 
 async function startServer(){
     await connectDB();
+
+    try{
+        await mongoose.connection.collection('tasks').dropIndex('userId_1_externalEventId_1');
+        console.log("Dropped existing index on tasks collection");
+    }catch(err){
+        console.log("No existing index to drop or error dropping index:", err.message);
+    }
 
     await app.register(passportConfig);
 

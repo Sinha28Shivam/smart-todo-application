@@ -10,13 +10,13 @@ export async function importCalender(request, reply){
 
     try{
         await User.findByIdAndUpdate(
-            request.user.id,
+            request.jwtUser.id,
             { calenderUrl },
             { new: true }
         );
 
         const created = await importCalenderForUser(
-            request.user.id,
+            request.jwtUser.id,
             calenderUrl
         );
 

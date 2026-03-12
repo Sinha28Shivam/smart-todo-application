@@ -42,5 +42,11 @@ const taskSchema = new mongoose.Schema({
 
 });
 
-taskSchema.index({ userId: 1, externalEventId: 1 }, { unique: true });
+taskSchema.index(
+    { userId: 1, externalEventId: 1 }, 
+    { 
+        unique: true,
+        partialFilterExpression: { externalEventId: { $type: "string" } } 
+    }
+);
 export const Task = mongoose.model("Task", taskSchema);
