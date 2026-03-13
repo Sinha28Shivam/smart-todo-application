@@ -26,6 +26,7 @@ export default function LoginPage() {
             const res = await fetch("http://localhost:5000/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(credentials),
             });
 
@@ -33,7 +34,7 @@ export default function LoginPage() {
             
             if (res.ok) {
                 setAuthData(data); // Stores name, email, and token
-                localStorage.setItem("token", data.token);
+                // localStorage.setItem("token", data.token);
                 window.location.href = "/dashboard"; 
             } else {
                 setError(data.message || "Invalid credentials");

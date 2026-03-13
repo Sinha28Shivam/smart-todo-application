@@ -7,9 +7,30 @@ import dotenv from 'dotenv';
 import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 
+
 dotenv.config();
 
 export const app = Fastify({ logger: true });
+
+// Global error handler implmentation
+
+app.setErrorHandler(( error, request, reply ) => {
+  request.log.error(error);
+
+  const statusCode = error.statusCode || 500;
+
+  const response = {
+    success: false,
+    error: {
+      message: statusCode === 500 ? 'Internal Server Error' : error.message,
+      ...(process.env.NODE_ENV === 'development' && {
+        stack: error.stack,
+        details: error.validation
+      })
+    }
+  };
+  reply.status(statusCode).send(response);
+})
 
 await app.register(fastifySecureSession, {
   key: Buffer.from("a" .repeat(32)), 
@@ -53,16 +74,23 @@ await app.register(swagger, {
   });
 
 // CORS Setup
-await app.register(cors, {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+app.register(cors, {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 })
+
+
 
 
 // JWT Setup
 app.register(jwt, {
     secret: process.env.JWT_SECRET,
-    decoratorName: 'jwtUser'
+    decoratorName: 'jwtUser',
+    cookie: {
+      cookieName: 'token',
+      signed: false,
+    }
 });
 
 app.decorate('authenticate', async (request, reply) => {
@@ -70,7 +98,9 @@ app.decorate('authenticate', async (request, reply) => {
     try{
         await request.jwtVerify();
     }catch(error){
-        return reply.code(401).send({ message: 'Unauthorized Access' });
+        error.statusCode = 401;
+        error.message = 'Unauthorized';
+        throw error;
     }
 
 })

@@ -2,13 +2,11 @@ const BASE_URL = "http://localhost:5000/api";
 import { logout } from "../utils/auth";
 
 export async function ApiRequest(endpoint, options = {}) {
-    const token = typeof window !== "undefined"
-        ? localStorage.getItem("token")
-        : null;
+    // const token = typeof window !== "undefined"
+    //     ? localStorage.getItem("token")
+    //     : null;
 
-    const headers = {
-        ...(token && { Authorization: `Bearer ${token}` }),
-    };
+    const headers = {};
 
     // Add Content-Type ONLY if body exists
     if (options.body) {
@@ -18,12 +16,14 @@ export async function ApiRequest(endpoint, options = {}) {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
         ...options,
         headers,
+        credentials: "include", // Include cookies for session management
     });
 
     if (!response.ok) {
         if (response.status === 401) {
-            logout();
+            await logout();
             window.location.href = "/login";
+            return;
         }
 
         const error = await response.json();

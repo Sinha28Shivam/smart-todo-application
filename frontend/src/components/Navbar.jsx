@@ -15,8 +15,8 @@ export default function Navbar() {
     if (currentUser) setUser(currentUser);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setUser(null);
     window.location.href = "/";
   };

@@ -39,11 +39,21 @@ export async function loginUser(request, reply){
         {
             expiresIn: '2h'
         }
+    );
 
+    reply.setCookie('token', token, {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 // 2 hours in seconds
+    }).send({
+        message: 'Login successful',
+        name: user.name,
+        email: user.email,
+    });
 
-);
-
-    reply.send({ name: user.name, email: user.email, token});
+    
 }
 
 export async function googleCallback(req, reply){
@@ -53,7 +63,26 @@ export async function googleCallback(req, reply){
     const token = req.server.jwt.sign({
         id: user._id,
         email: user.email
+    }, {
+        expiresIn: '2h'
     });
- 
-    reply.redirect(`http://localhost:3000/oauth-success?token=${token}`);
+
+    reply.setCookie('token', token, {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 // 2 hours in seconds
+    });
+
+    const safeName = encodeURIComponent(user.name || "Google User");
+    const safeEmail = encodeURIComponent(user.email);
+
+    // redirect to frontend. Removed ?token=$token from the URL for security reasons. Frontend can read the token from the cookie.
+    reply.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/oauth-success?name=${safeName}&email=${safeEmail}`);
+
+}
+
+export async function logoutUser(req, reply){
+    reply.clearCookie('token', { path: '/' }).send({ message: 'Logged out successfully' });
 }

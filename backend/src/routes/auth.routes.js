@@ -1,6 +1,7 @@
-import { registerUser, loginUser } from "../controllers/auth.controller.js";
+import { registerUser, loginUser, logoutUser } from "../controllers/auth.controller.js";
 import fastifyPassport from "@fastify/passport";
 import { googleCallback } from "../controllers/auth.controller.js";
+import fastify from "fastify";
 
 
 
@@ -71,6 +72,8 @@ export async function authRoutes(fastify){
       },
       loginUser
     );
+
+    fastify.post('/logout', logoutUser);
 
       fastify.get("/google",
          {

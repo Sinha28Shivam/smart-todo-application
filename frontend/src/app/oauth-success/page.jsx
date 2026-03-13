@@ -10,32 +10,27 @@ function OAuthHandler() {
     const router = useRouter();
 
     useEffect(() => {
-        const token = searchParams.get("token");
+        const name = searchParams.get("name");
+        const email = searchParams.get("email");
 
-        if (token) {
+        if (name && email) {
             try {
-                // Decode the JWT payload (the middle part of the token)
-                const payloadBase64 = token.split('.')[1];
-                const decodedPayload = JSON.parse(atob(payloadBase64));
-
-                // Save it using your existing auth utility
+                // Save UI metadata using your existing auth utility
                 setAuthData({
-                    token: token,
-                    name: decodedPayload.name || "Google User", // Fallback name
-                    email: decodedPayload.email
+                    name: decodeURIComponent(name),
+                    email: decodeURIComponent(email)
                 });
 
                 // Redirect to the dashboard
                 window.location.href = "/dashboard";
             } catch (error) {
-                console.error("Failed to parse token:", error);
-                router.push("/login?error=invalid_token");
+                console.error("Failed to process auth data:", error);
+                router.push("/login?error=invalid_data");
             }
         } else {
             router.push("/login");
         }
     }, [searchParams, router]);
-
     return (
         <div className="min-h-[80vh] flex flex-col items-center justify-center text-white">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mb-4"></div>
