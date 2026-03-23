@@ -28,14 +28,16 @@ async function startServer(){
     app.register(aiRoutes, { prefix: '/api'});
     app.register(calenderRoutes, { prefix: '/api' });
 
-    
+    const PORT = process.env.PORT;
+    console.log("ENV PORT VALUE:", PORT);
 
     await app.listen({
-        port: process.env.PORT || 5000,
+        port: Number(PORT) || 8080,
+        host: "0.0.0.0"
     })
     // start cron jobs
     startCalenderSyncCron();
     startNotificationCron();
-    console.log(`Server is running at http://localhost:${process.env.PORT || 5000}`);
+    console.log(`Server is running on port ${PORT}`);
 }
 startServer();
