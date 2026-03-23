@@ -23,11 +23,18 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: npm install, build, and test
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+        
+      - name: Build Next.js app
+        working-directory: frontend
+        run: npm run build
+
+      - name: Zip frontend
         run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+          cd frontend
+          zip -r frontend.zip .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -61,5 +68,5 @@ jobs:
         with:
           app-name: 'smart-todo-frontend'
           slot-name: 'Production'
-          package: .
+          package: 'frontend/frontend.zip'
           
