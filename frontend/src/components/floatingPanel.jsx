@@ -20,7 +20,9 @@ export default function AIFloatingPanel() {
         const data = await ApiRequest("/tasks/summary");
         
         // 2. Send the prompt directly to Ollama via backend
-        const res = await fetch("http://localhost:5000/api/ai/suggest", {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
+        const res = await fetch(`${BASE_URL}/ai/suggest`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

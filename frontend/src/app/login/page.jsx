@@ -14,7 +14,10 @@ export default function LoginPage() {
 
     const handleGoogleLogin = () => {
         console.log("clicked");
-        window.location.href = "http://localhost:5000/api/auth/google";
+        
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        
+        window.location.href = `${BASE_URL}/auth/google`; // Redirect to backend for Google OAuth
     };
 
     const handleSubmit = async (e) => {
@@ -23,7 +26,7 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/auth/login", {
+            const res = await fetch(`${BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
