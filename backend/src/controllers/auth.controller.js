@@ -71,7 +71,7 @@ export async function googleCallback(req, reply){
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: 'none',
         maxAge: 2 * 60 * 60 // 2 hours in seconds
     });
 

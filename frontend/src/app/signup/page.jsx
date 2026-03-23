@@ -17,7 +17,9 @@ export default function SignupPage() {
         setIsLoading(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/auth/register", {
+            const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+            
+            const res = await fetch(`${BASE_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

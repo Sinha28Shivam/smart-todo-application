@@ -71,4 +71,5 @@ jobs:
           app-name: 'smart-todo-frontend'
           slot-name: 'Production'
           package: 'frontend.zip'
+          startup-command: 'npm start'
           
