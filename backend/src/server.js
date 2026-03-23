@@ -28,8 +28,14 @@ async function startServer(){
     app.register(aiRoutes, { prefix: '/api'});
     app.register(calenderRoutes, { prefix: '/api' });
 
+     app.get("/", async (req, reply) => {
+    return { message: "Smart Todo Backend is running 🚀" };
+});
+
     const PORT = process.env.PORT;
     console.log("ENV PORT VALUE:", PORT);
+
+   
 
     await app.listen({
         port: Number(PORT) || 8080,
