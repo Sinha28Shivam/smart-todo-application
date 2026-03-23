@@ -30,7 +30,7 @@ jobs:
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend-app
+          name: node-app
           path: backend
 
   deploy:
