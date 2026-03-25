@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone') {
+            steps {
+                git 'https://github.com/Sinha28Shivam/smart-todo-application.git'
+            }
+        }
+
+        stage('Backend Build') {
+            steps {
+                dir('backend') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage('Frontend Build') {
+            steps {
+                dir('frontend') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+            }
+        }
+
+        stage('Azure Login') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'azure-sp',
+                    usernameVariable: 'APP_ID',
+                    passwordVariable: 'PASSWORD'
+                )]) {
+                    sh '''
+                    az login --service-principal \
+                      -u $APP_ID \
+                      -p $PASSWORD \
+                      --tenant YOUR_TENANT_ID
+
+                    az account set --subscription e3201efd-264e-408b-b4d2-5f5aae3c4403
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Backend') {
+            steps {
+                sh '''
+                cd backend
+                zip -r backend.zip .
+                az webapp deploy \
+                  --resource-group smart-todo-rg \
+                  --name smart-todo-backend \
+                  --src-path backend.zip \
+                  --type zip
+                '''
+            }
+        }
+
+        stage('Deploy Frontend') {
+            steps {
+                sh '''
+                cd frontend
+                zip -r frontend.zip .
+                az webapp deploy \
+                  --resource-group smart-todo-rg \
+                  --name smart-todo-frontend \
+                  --src-path frontend.zip \
+                  --type zip
+                '''
+            }
+        }
+    }
+}
