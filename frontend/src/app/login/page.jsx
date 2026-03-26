@@ -13,9 +13,10 @@ export default function LoginPage() {
     const router = useRouter();
 
     const handleGoogleLogin = () => {
+        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        
         console.log("clicked");
         
-        const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
         
         window.location.href = `${BASE_URL}/auth/google`; // Redirect to backend for Google OAuth
     };

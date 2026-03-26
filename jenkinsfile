@@ -37,7 +37,7 @@ pipeline {
                     az login --service-principal \
                       -u $APP_ID \
                       -p $PASSWORD \
-                      --tenant YOUR_TENANT_ID
+                      --tenant e24ac094-efd8-4a6b-98d5-a129b32a8c9a
 
                     az account set --subscription e3201efd-264e-408b-b4d2-5f5aae3c4403
                     '''
@@ -49,7 +49,10 @@ pipeline {
             steps {
                 sh '''
                 cd backend
-                zip -r backend.zip .
+                zip -r backend.zip .next public package.json next.config.js \
+                -x "node_modules/*" ".git/*"
+
+                export SCM_DO_BUILD_DURING_DEPLOYMENT=false
                 az webapp deploy \
                   --resource-group smart-todo-rg \
                   --name smart-todo-backend \
@@ -63,12 +66,11 @@ pipeline {
             steps {
                 sh '''
                 cd frontend
-                zip -r frontend.zip .
-                az webapp deploy \
-                  --resource-group smart-todo-rg \
-                  --name smart-todo-frontend \
-                  --src-path frontend.zip \
-                  --type zip
+                zip -r frontend.zip . -x "node_modules/*" ".git/*"
+                az webapp deployment source config-zip \
+                --resource-group smart-todo-rg \
+                --name smart-todo-frontend \
+                --src frontend.zip
                 '''
             }
         }
