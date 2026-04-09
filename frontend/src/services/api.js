@@ -23,7 +23,7 @@ export async function ApiRequest(endpoint, options = {}) {
         if (response.status === 401) {
             await logout();
             window.location.href = "/login";
-            return;
+            throw new Error("Unauthorized - Redirecting to login");
         }
 
         const error = await response.json();
