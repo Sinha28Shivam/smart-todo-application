@@ -23,7 +23,7 @@ export const logout = async () => {
         localStorage.removeItem("user");
 
         try{
-            await fetch(`${BASE_URL}/logout`, {
+            await fetch(`${BASE_URL}/auth/logout`, {
                 method: "POST",
                 credentials: "include",
             });
