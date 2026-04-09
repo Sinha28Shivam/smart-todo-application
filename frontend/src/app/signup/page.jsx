@@ -93,7 +93,9 @@ export default function SignupPage() {
                                 <Lock className="w-4 h-4 text-purple-500" /> Password
                             </label>
                             <input 
-                                type="password" placeholder="Create a password" required 
+                                type="password" placeholder="Min 8 chars, 1 uppercase, 1 special char" required 
+                                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                                title="Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character."
                                 className="w-full px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all bg-white
                                 text-gray-800"
                                 onChange={(e) => setFormData({...formData, password: e.target.value})}

@@ -45,7 +45,7 @@ export async function loginUser(request, reply){
         path: '/',
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 2 * 60 * 60 // 2 hours in seconds
     }).send({
         message: 'Login successful',
